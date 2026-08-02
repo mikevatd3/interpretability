@@ -2,7 +2,7 @@
 every experiment via this package's `load-to-spaces` console script (see
 the root README.md's "DigitalOcean Spaces" section).
 
-Usage, from within any experiment that depends on interp-storage:
+Usage, from within any experiment that depends on this package:
     uv run load-to-spaces <path> [<path> ...]
 
 Uploads to exactly the key spaces.sync_down() will look for later (same
@@ -20,16 +20,12 @@ import os
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
-
-from .spaces import sync_up
+from .spaces import sync_up  # importing this triggers spaces.py's own load_dotenv()
 
 REQUIRED_ENV_VARS = ("SPACES_KEY", "SPACES_SECRET", "SPACES_ENDPOINT", "SPACES_BUCKET")
 
 
 def main():
-    load_dotenv()
-
     missing = [v for v in REQUIRED_ENV_VARS if not os.environ.get(v)]
     if missing:
         raise SystemExit(

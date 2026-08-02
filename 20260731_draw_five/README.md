@@ -64,7 +64,7 @@ uv run main.py
 
 ## DigitalOcean Spaces
 
-Every script here reads/writes through `../interp_storage` (a shared
+Every script here reads/writes through `../storage` (a shared
 package, not local to this experiment -- see the root `README.md`'s
 "Shared infrastructure" section) if Spaces is configured (silent no-op
 otherwise): input pulled fresh from the bucket before each script reads

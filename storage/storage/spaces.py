@@ -22,7 +22,12 @@ Configured entirely via env vars (see the root README.md's "DigitalOcean
 Spaces" section for the required .env keys) -- if they're unset, every
 function in this module is a silent no-op, so scripts behave exactly as
 they did before Spaces existed when it isn't configured (e.g. plain local
-runs).
+runs). This module calls load_dotenv() itself at import time, rather than
+relying on whatever experiment script imports it to remember to -- since
+load_dotenv() (with no explicit path) searches upward from *this file's*
+location, not the caller's, a single .env at the interpretability repo
+root (not one per experiment) is enough; it's found the same way
+regardless of which experiment triggers the import.
 """
 
 import os
@@ -30,9 +35,12 @@ from pathlib import Path
 
 import boto3
 from botocore.exceptions import ClientError
+from dotenv import load_dotenv
 
-# interp_storage/interp_storage/spaces.py -> interp_storage/ (this package)
-# -> interp_storage/ (this project) -> interpretability/ (repo root)
+load_dotenv()
+
+# storage/storage/spaces.py -> storage/ (this package)
+# -> storage/ (this project) -> interpretability/ (repo root)
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 

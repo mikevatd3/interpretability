@@ -1,4 +1,4 @@
-# interp-storage
+# storage
 
 Shared DigitalOcean Spaces (S3-compatible) read/write helpers, used across
 every experiment in this repo rather than copy-pasted per experiment --
@@ -9,12 +9,12 @@ one thing is shared while most experiment code deliberately isn't.
 
 ```
 cd <your experiment folder>
-uv add --editable ../interp_storage
+uv add --editable ../storage
 ```
 
 Then in code:
 ```python
-from interp_storage import sync_down, sync_up
+from storage import sync_down, sync_up
 
 sync_down(some_local_path)   # pull from Spaces if configured, else no-op
 sync_up(some_local_path)     # push to Spaces if configured, else no-op

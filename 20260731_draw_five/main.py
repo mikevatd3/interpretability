@@ -41,7 +41,7 @@ from config import (
     VARIANTS,
     draws_csv_path,
 )
-from interp_storage import sync_down, sync_up
+from storage import sync_down, sync_up
 
 load_dotenv()
 
@@ -52,7 +52,7 @@ def load_pairs() -> pd.DataFrame:
     for where this came from and which papers to cite. Row i here matches
     row i of the source tsv (no header, no reordering).
 
-    Pulled fresh from DO Spaces first if configured (see spaces_storage.py)
+    Pulled fresh from DO Spaces first if configured (see ../storage)
     -- falls back to whatever's already at PAIRS_PATH if not."""
     sync_down(PAIRS_PATH)
     return pd.read_csv(

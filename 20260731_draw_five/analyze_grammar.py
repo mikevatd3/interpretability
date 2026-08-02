@@ -28,7 +28,7 @@ import pandas as pd
 import spacy
 
 from config import DATA_DIR, SPACY_MODEL, draws_csv_path, grammar_csv_path
-from interp_storage import sync_down, sync_up
+from storage import sync_down, sync_up
 
 
 def tag_rows(draws: pd.DataFrame, nlp) -> pd.DataFrame:

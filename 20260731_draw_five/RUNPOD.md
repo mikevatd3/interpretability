@@ -58,15 +58,15 @@ uv run load-to-spaces ../data_library/groenwold_aave_sae/aave_sae_pairs.tsv
 Nothing in this repo is committed yet, so `git clone` on the pod won't have
 this session's work -- use `rsync` for code instead (data no longer needs
 rsync at all, it flows through Spaces). This needs both this experiment
-folder *and* `../interp_storage` -- `main.py`'s `pyproject.toml` depends on
-it as a local editable path (`uv add --editable ../interp_storage`), so
+folder *and* `../storage` -- `main.py`'s `pyproject.toml` depends on
+it as a local editable path (`uv add --editable ../storage`), so
 `uv sync` on the pod needs that directory to actually exist at the same
 relative path:
 ```
 rsync -avz --exclude='.venv' --exclude='__pycache__' --exclude='data' \
   20260731_draw_five/ root@<host>:~/interpretability/20260731_draw_five/ -e "ssh -p <port>"
 rsync -avz --exclude='.venv' --exclude='__pycache__' \
-  interp_storage/ root@<host>:~/interpretability/interp_storage/ -e "ssh -p <port>"
+  storage/ root@<host>:~/interpretability/storage/ -e "ssh -p <port>"
 ```
 Preserve the relative layout (`interpretability/20260731_draw_five/`) since
 `config.py` locates `data_library/` via

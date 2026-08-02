@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-load-to-spaces = "interp_storage.load:main"
+load-to-spaces = "storage.load:main"
 
 [build-system]
 requires = ["hatchling"]

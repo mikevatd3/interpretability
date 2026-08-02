@@ -23,7 +23,7 @@ import math
 import pandas as pd
 
 from config import DATA_DIR, adj_pairs_csv_path, draws_csv_path, grammar_csv_path
-from interp_storage import sync_down, sync_up
+from storage import sync_down, sync_up
 
 
 def mcnemar(b: int, c: int) -> tuple[float, float]:
