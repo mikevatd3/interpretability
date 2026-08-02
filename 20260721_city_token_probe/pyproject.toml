@@ -1,0 +1,9 @@
+[project]
+name = "city-token-probe"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas>=3.0.3",
+    "python-dotenv>=1.2.2",
+    "transformer-lens>=3.5.1",
+]

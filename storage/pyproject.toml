@@ -1,0 +1,17 @@
+[project]
+name = "storage"
+version = "0.1.0"
+description = "Shared DigitalOcean Spaces (S3-compatible) read/write helpers, used across interpretability experiments"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.43.62",
+    "python-dotenv>=1.2.2",
+]
+
+[project.scripts]
+load-to-spaces = "interp_storage.load:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
