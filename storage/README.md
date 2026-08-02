@@ -20,11 +20,12 @@ sync_down(some_local_path)   # pull from Spaces if configured, else no-op
 sync_up(some_local_path)     # push to Spaces if configured, else no-op
 ```
 
-And from the command line, to seed the bucket with a file that doesn't
-exist there yet (fails loudly if Spaces env vars aren't set, unlike
-`sync_up` itself):
+And from the command line, to seed the bucket with files that don't exist
+there yet (fails loudly if Spaces env vars aren't set, unlike `sync_up`
+itself) -- a directory argument uploads everything under it recursively:
 ```
 uv run load-to-spaces <path> [<path> ...]
+uv run load-to-spaces ../data_library   # e.g. every dataset in one go
 ```
 
 See the root `README.md`'s "DigitalOcean Spaces" section for the required

@@ -73,11 +73,13 @@ A bucket key mirrors the local path relative to this repo's root, prefixed
 with `SPACES_PREFIX` — e.g.
 `data_library/groenwold_aave_sae/aave_sae_pairs.tsv` becomes
 `interpretability/data_library/groenwold_aave_sae/aave_sae_pairs.tsv`,
-regardless of which experiment reads/writes it. To seed the bucket with a
-file that doesn't exist there yet (fails loudly if the env vars above
-aren't set, unlike `sync_up` itself):
+regardless of which experiment reads/writes it. To seed the bucket with
+files that don't exist there yet (fails loudly if the env vars above
+aren't set, unlike `sync_up` itself) — a directory argument uploads
+everything under it recursively:
 ```
 uv run load-to-spaces <path> [<path> ...]
+uv run load-to-spaces ../data_library   # e.g. every dataset in one go
 ```
 
 ## TODO
