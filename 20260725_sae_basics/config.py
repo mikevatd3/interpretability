@@ -7,7 +7,7 @@ import torch
 # AAVE/SAE pairs are a shared resource that isn't duplicated per spun-out
 # project, same convention as ../20260725_matched_guise/main.py.
 DATA_DIR = Path(__file__).resolve().parent / "data"
-JUSTHOUSINGNOTES_DATA_DIR = Path("~/1_projects/llm_housing_project/justhousingnotes/data").expanduser()
+DATA_LIBRARY_DIR = Path(__file__).resolve().parent.parent / "data_library"
 
 
 def get_device() -> str:
@@ -21,7 +21,7 @@ def get_device() -> str:
 
 DEVICE = get_device()
 
-PAIRS_PATH = JUSTHOUSINGNOTES_DATA_DIR / "groenwold_aave_sae" / "aave_sae_pairs.tsv"
+PAIRS_PATH = DATA_LIBRARY_DIR / "groenwold_aave_sae" / "aave_sae_pairs.tsv"
 
 SAE_RELEASE = "gpt2-small-res-jb"
 

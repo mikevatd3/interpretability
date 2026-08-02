@@ -107,7 +107,7 @@ def collect(layer: int, variant: str) -> None:
         sae_last=sae_last,
     )
     print(f"wrote {out_path}")
-    print("row i of every array here matches row i of ../../justhousingnotes/data/groenwold_aave_sae/aave_sae_pairs.tsv")
+    print("row i of every array here matches row i of ../data_library/groenwold_aave_sae/aave_sae_pairs.tsv")
 
 
 if __name__ == "__main__":

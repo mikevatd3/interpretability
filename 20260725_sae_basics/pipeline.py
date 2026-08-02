@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 from config import acts_hook_name, all_templates_diff_csv_path, template_acts_npz_path, top_pairs_csv_path
 from core import combine_grouped_stats, feature_vectors, load_model_and_sae, neuronpedia_label, paired_diff_stats
-from data import TRAIT_PROMPTS, load_pairs
+from data_prep import TRAIT_PROMPTS, load_pairs
 
 load_dotenv()
 

@@ -5,12 +5,12 @@ import torch
 # Same convention as ../20260725_sae_basics/config.py and
 # ../20260725_matched_guise/main.py: this project's own outputs live in its
 # local data/, but the shared AAVE/SAE source data isn't duplicated per
-# spun-out project -- it's referenced directly from justhousingnotes.
+# spun-out project -- it's referenced from the shared data_library/.
 DATA_DIR = Path(__file__).resolve().parent / "data"
-JUSTHOUSINGNOTES_DATA_DIR = Path("~/1_projects/llm_housing_project/justhousingnotes/data").expanduser()
+DATA_LIBRARY_DIR = Path(__file__).resolve().parent.parent / "data_library"
 
-PAIRS_PATH = JUSTHOUSINGNOTES_DATA_DIR / "groenwold_aave_sae" / "aave_sae_pairs.tsv"
-KATZ_PATH = JUSTHOUSINGNOTES_DATA_DIR / "dialect_prejudice_repo" / "katz.txt"
+PAIRS_PATH = DATA_LIBRARY_DIR / "groenwold_aave_sae" / "aave_sae_pairs.tsv"
+KATZ_PATH = DATA_LIBRARY_DIR / "dialect_prejudice_repo" / "katz.txt"
 
 
 def get_device() -> str:

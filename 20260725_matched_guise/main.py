@@ -8,10 +8,10 @@ from prompt_level_association_score import Q
 
 
 _ = load_dotenv()
-BASE_DIR = Path("~/1_projects/llm_housing_project/justhousingnotes")
+DATA_LIBRARY_DIR = Path(__file__).resolve().parent.parent / "data_library"
 
 pairs = pd.read_csv(
-    BASE_DIR / "data" / "groenwold_aave_sae" / "aave_sae_pairs.tsv",
+    DATA_LIBRARY_DIR / "groenwold_aave_sae" / "aave_sae_pairs.tsv",
     sep="\t",
     header=None,
     names=["aave", "sae"],

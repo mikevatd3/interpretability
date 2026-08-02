@@ -36,7 +36,7 @@ load_dotenv()
 
 def load_pairs() -> pd.DataFrame:
     """The 2019 intent-equivalent AAVE/SAE tweet pairs -- see
-    ../../justhousingnotes/data/groenwold_aave_sae/aave_sae_pairs.SOURCE.md
+    ../data_library/groenwold_aave_sae/aave_sae_pairs.SOURCE.md
     for where this came from and which papers to cite."""
     return pd.read_csv(
         PAIRS_PATH, sep="\t", header=None, names=["aave", "sae"], quoting=csv.QUOTE_NONE

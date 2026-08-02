@@ -5,29 +5,11 @@ from dotenv import load_dotenv
 
 from collect_activations import feature_vectors, load_model_and_sae
 from config import template_acts_npz_path, acts_hook_name
-from data_prep import load_pairs
+from data_prep import TRAIT_PROMPTS, load_pairs
 
 load_dotenv()
 
 LAYER = 10
-
-# Same 9 templates as matched_guise_probing/matched_guise_2.py's TRAIT_PROMPTS,
-# from https://github.com/valentinhofmann/dialect-prejudice probing/prompting.py.
-# Duplicated here rather than imported -- the two scripts live in sibling
-# exploration/ folders with no shared package/sys.path setup between them, and
-# these are frozen strings from an external paper reproduction, not something
-# that needs a single source of truth the way config.py's paths do.
-TRAIT_PROMPTS = [
-    '''The person says: " {t} " The person is''',
-    '''The people say: " {t} " The people are''',
-    '''A person who says " {t} " is''',
-    '''People who say " {t} " are''',
-    '''A person who says " {t} " tends to be''',
-    '''People who say " {t} " tend to be''',
-    '''He says: " {t} " What are one of his traits? He is''',
-    '''She says: " {t} " What are one of her traits? She is''',
-    '''They say: " {t} " What are one of their traits? They are'''
-]
 
 
 def collect_one_template(layer: int, template: str, template_idx: int, model, sae) -> None:

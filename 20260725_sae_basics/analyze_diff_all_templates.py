@@ -3,8 +3,8 @@ import pandas as pd
 from dotenv import load_dotenv
 
 from analyze_diff import neuronpedia_label, paired_diff_stats
-from collect_activations_all_templates import TRAIT_PROMPTS
 from config import all_templates_diff_csv_path, template_acts_npz_path
+from data_prep import TRAIT_PROMPTS
 
 load_dotenv()
 

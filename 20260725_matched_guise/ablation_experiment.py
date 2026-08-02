@@ -14,7 +14,7 @@ from sae_ablation import (
     score_probe_words,
 )
 
-BASE_DIR = Path("~/1_projects/llm_housing_project/justhousingnotes").expanduser()
+DATA_LIBRARY_DIR = Path(__file__).resolve().parent.parent / "data_library"
 
 # From https://github.com/valentinhofmann/dialect-prejudice probing/prompting.py
 OUTER_PROMPTS = [
@@ -43,7 +43,7 @@ load_dotenv()
 
 def load_pairs() -> pd.DataFrame:
     return pd.read_csv(
-        BASE_DIR / "data" / "groenwold_aave_sae" / "aave_sae_pairs.tsv",
+        DATA_LIBRARY_DIR / "groenwold_aave_sae" / "aave_sae_pairs.tsv",
         sep="\t",
         header=None,
         names=["aave", "sae"],
