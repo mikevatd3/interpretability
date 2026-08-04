@@ -1,12 +1,17 @@
 [project]
-name = "20260802-priority-cue"
+name = "20260802-easy-priority-cue"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "pandas>=2.0",
+    "mimesis>=21.0.0",
+    "pandas>=3.0.5",
+    "python-dotenv>=1.2.2",
     "storage",
+    "tabulate>=0.10.0",
+    "transformer-lens>=3.6.0",
+    "typing-extensions>=4.16.0",
 ]
 
 [tool.uv.sources]

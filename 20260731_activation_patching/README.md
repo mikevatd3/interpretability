@@ -23,8 +23,8 @@ represents, only *where* the causal effect is concentrated.
 
 ## Method sketch
 
-- "corrupted" run = AAVE-guise prompt (produces the biased completion)
-- "clean" run = SAE-guise prompt (produces the baseline completion)
+- AAVE run = AAVE-guise prompt (produces the biased completion)
+- SAE run = SAE-guise prompt (produces the baseline completion)
 - patch one layer's residual stream at a time, **at the final token position
   only** -- AAVE/SAE prompts aren't token-aligned (the two sides of a pair
   are different lengths), so patching every position the way ROME does for
@@ -32,15 +32,15 @@ represents, only *where* the causal effect is concentrated.
   the only thing `q(x)` (in `matched_guise_probing`) ever reads, so this is
   a natural fit rather than a compromise.
 - metric: log-prob of a target trait word (or a `katz.txt`-averaged
-  `q(x)`-style ratio) under the patched run, relative to the clean/corrupted
+  `q(x)`-style ratio) under the patched run, relative to the AAVE/SAE
   baselines
 - sweep across all of `model.cfg.n_layers` (12 for GPT-2 small) -> a
   per-layer localization profile
 
 ## Open questions (not yet settled)
 
-- [ ] Patch direction: denoising (clean activation spliced into the
-      corrupted run) or noising (corrupted spliced into clean)? These answer
+- [ ] Patch direction: denoising (SAE activation spliced into the
+      AAVE run) or noising (AAVE spliced into SAE)? These answer
       different questions -- "what's sufficient to restore the biased
       outcome" vs. "what's necessary to cause it."
 - [ ] `hook_resid_pre` vs `hook_resid_post` per layer.

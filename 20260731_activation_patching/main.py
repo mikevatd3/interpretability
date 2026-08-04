@@ -40,29 +40,29 @@ def last_token_logits(model: HookedTransformer, text: str) -> torch.Tensor:
 
 def patch_layer_at_last_token(
     model: HookedTransformer,
-    corrupted_text: str,
-    clean_text: str,
+    aave_text: str,
+    sae_text: str,
     layer: int,
 ) -> torch.Tensor:
-    """Denoising patch: run corrupted_text, but with layer `layer`'s
+    """Denoising patch: run aave_text, but with layer `layer`'s
     resid_post at the final token position overwritten by the value it took
-    on a run of clean_text. Returns logits at the final position."""
+    on a run of sae_text. Returns logits at the final position."""
     hook_name = f"blocks.{layer}.hook_resid_post"
 
-    clean_tokens = model.to_tokens(clean_text)
+    sae_tokens = model.to_tokens(sae_text)
     with torch.no_grad():
-        _, clean_cache = model.run_with_cache(clean_tokens, names_filter=hook_name)
-    clean_last_token_activation = clean_cache[hook_name][0, -1, :]
+        _, sae_cache = model.run_with_cache(sae_tokens, names_filter=hook_name)
+    sae_last_token_activation = sae_cache[hook_name][0, -1, :]
 
-    def overwrite_last_token_with_clean_activation(activation, hook):
-        activation[0, -1, :] = clean_last_token_activation
+    def overwrite_last_token_with_sae_activation(activation, hook):
+        activation[0, -1, :] = sae_last_token_activation
         return activation
 
-    corrupted_tokens = model.to_tokens(corrupted_text)
+    aave_tokens = model.to_tokens(aave_text)
     with torch.no_grad():
         patched_logits = model.run_with_hooks(
-            corrupted_tokens,
-            fwd_hooks=[(hook_name, overwrite_last_token_with_clean_activation)],
+            aave_tokens,
+            fwd_hooks=[(hook_name, overwrite_last_token_with_sae_activation)],
         )
     return patched_logits[0, -1, :]
 
@@ -96,27 +96,27 @@ def run_patching_sweep(
     layers: range = LAYER_RANGE,
 ) -> pd.DataFrame:
     """Per-layer localization profile: how much does patching layer `layer`
-    move the corrupted (AAVE) run's target-word logit (averaged over
-    `target_words`) back toward the clean (SAE) baseline, averaged over
-    `pairs`? 0 = no effect, 1 = fully restores the clean baseline."""
+    move the AAVE run's target-word logit (averaged over
+    `target_words`) back toward the SAE baseline, averaged over
+    `pairs`? 0 = no effect, 1 = fully restores the SAE baseline."""
     target_ids = target_token_ids(model, target_words)
 
     rows = []
     for pair_index, pair in pairs.iterrows():
-        corrupted_text, clean_text = pair["aave"], pair["sae"]
+        aave_text, sae_text = pair["aave"], pair["sae"]
 
-        corrupted_logit = mean_target_word_logit(
-            last_token_logits(model, corrupted_text), target_ids
+        aave_logit = mean_target_word_logit(
+            last_token_logits(model, aave_text), target_ids
         )
-        clean_logit = mean_target_word_logit(last_token_logits(model, clean_text), target_ids)
-        clean_minus_corrupted = clean_logit - corrupted_logit
-        if clean_minus_corrupted == 0:
+        sae_logit = mean_target_word_logit(last_token_logits(model, sae_text), target_ids)
+        sae_minus_aave = sae_logit - aave_logit
+        if sae_minus_aave == 0:
             continue
 
         for layer in layers:
-            patched_logits = patch_layer_at_last_token(model, corrupted_text, clean_text, layer)
+            patched_logits = patch_layer_at_last_token(model, aave_text, sae_text, layer)
             patched_logit = mean_target_word_logit(patched_logits, target_ids)
-            metric_shift = (patched_logit - corrupted_logit) / clean_minus_corrupted
+            metric_shift = (patched_logit - aave_logit) / sae_minus_aave
             rows.append({"pair_index": pair_index, "layer": layer, "metric_shift": metric_shift})
 
     return pd.DataFrame(rows).groupby("layer")["metric_shift"].mean().reset_index()
