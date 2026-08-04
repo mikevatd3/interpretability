@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from transformer_lens import HookedTransformer
 from data_prep import fake_applications
 
-from config import DEVICE, DATA_DIR, results_csv_path
+from config import DEVICE, DATA_DIR, applications_csv_path, results_csv_path
 from storage import sync_up
 
 
@@ -23,6 +23,12 @@ def main():
     model_name = "gpt2" if DEVICE == "cpu" else "gemma-2-2b"
     model = load_model(model_name)
     applications = fake_applications()
+
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    applications_path = applications_csv_path(timestamp)
+    applications.to_csv(applications_path)
+    sync_up(applications_path)
 
     prompt = dedent(
         """
@@ -48,15 +54,12 @@ def main():
     print("\nContinuation:\n")
     print(continuation)
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    results_path = results_csv_path(datetime.now().strftime("%Y%m%d%H%M%S"))
-
+    results_path = results_csv_path(timestamp)
     row = pd.DataFrame([{
         "timestamp": datetime.now().isoformat(),
         "model": model_name,
         "device": DEVICE,
-        "applications": applications.reset_index().to_json(orient="records"),
-        "prompt": prompt,
+        "applications_file": applications_path.name,
         "continuation": continuation,
     }])
     row.to_csv(results_path, index=False)
