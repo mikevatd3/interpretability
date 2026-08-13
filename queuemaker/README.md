@@ -1,4 +1,11 @@
-# Priority Queue experiment
+# Quemaker
+
+## 2026-08-05
+
+After last week, when I didn't have very good luck trying to extend the dialect
+pairs work using SAEs and ablation, I started devising a new discrimination
+measurement process. Also, I made sure to bring the work back to the housing
+space.
 
 I was talking to a person working on developing LLM tools at a mortgage company,
 and they described a use case that I thought would be a perfect test for our
@@ -7,26 +14,25 @@ sales candidates to an LLM and have it look at the details and prioritize the
 most likely leads to close, so the sales person knows who to call first and
 spend the most time with."
 
-I don't know that this will ultimately get implemented as described, maybe their
-lawyers will get to them first. Their idea though seems like a fairly natural
+I don't know that this will ultimately get implemented as described--maybe their
+lawyers will get to them first. However, their idea seems like a fairly natural
 use-case for LLMs in decision making that is likely governed by the Fair Housing
 Act. The task also solves the problem from the prompt pairs work that I was
 looking at before: while discriminatory terms are more likely when prompted with
-AAVE dialect, those terms are still very unlikely.
+AAVE dialect, those terms are still very unlikely. When you force the model to
+order a set of candidates, any discriminatory behavior used in the decision can
+be measured from actual model output.
 
-When you force the model to order a set of candidates any discriminatory
-behavior used in the decision can be measured from actual model output.
-
-I had a couple of ideas. I had another conversation with a person working on
-polling data in Michigan, which since its a non-Voting Rights Act state he was
-talking about how they model inferred race from the voter file based on name and
-address. This gave me a couple of ideas for prompting:
+I had another conversation with a person working on polling data in Michigan.
+Since we're a non-Voting Rights Act state, his team uses a model to infer race
+from the voter file based on name and address. I was thinking that this could be
+sort of reverse engineered:
 
 1. I found a reference dataset: "Race and Ethnicity Data for First, Middle, and
    Surnames" Rosenman, Evan T. R. and Olivella, Santiago and Imai, Kosuke (2023)
    which includes probabilities for each name component. It's a really nice
    dataset that includes both p(name|race) and p(race|name) for thousands of
-   names. I was thinking that we could use these to generate names. 
+   names.
 2. Using the same logic as the person working on polling, we could also use
    census data about city demographics.
 
@@ -35,14 +41,17 @@ generate many examples of the 'list of candidates' that have particular
 structure -- the main loan details, loan amount and income, but then name and
 address that is associated with our demographic measures from the other
 datasets. This would have a nice effect of allowing the synthetic candidates
-generated to have a fully continuous probability over 'latent' racial groupings.
+generated to have a fully continuous probability over 'latent' racial groups.
 
-Then our final measure would be a regression analysis on the rankings, so we can
-control for things like debt to income, loan to value, and we don't need to
+Then our final measure would be a regression analysis on the rankings,
+(regression on rankings is a little tricky, but not too bad). We can then
+control for things like debt to income, loan to value, etc and we don't need to
 provide literal pairs within the candidate lists.
 
-I think it this will give us a rich data generation and model-output collection
+I think this will give us a rich data generation and model-output collection
 setup that will help pin-point SAE features that could be related to
-discriminatory effects, and have more dimensions of possible discriminatory
-decision making.
+discriminatory effects.
+
+## 2026-08-13
+
 

@@ -15,6 +15,7 @@ name = "20260802-easy-priority-cue"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "datasets" },
     { name = "mimesis" },
     { name = "pandas" },
     { name = "python-dotenv" },
@@ -26,6 +27,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "datasets", specifier = ">=5.0.1" },
     { name = "mimesis", specifier = ">=21.0.0" },
     { name = "pandas", specifier = ">=3.0.5" },
     { name = "python-dotenv", specifier = ">=1.2.2" },

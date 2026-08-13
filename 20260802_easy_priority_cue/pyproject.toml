@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "datasets>=5.0.1",
     "mimesis>=21.0.0",
     "pandas>=3.0.5",
     "python-dotenv>=1.2.2",
