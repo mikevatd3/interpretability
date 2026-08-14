@@ -9,11 +9,6 @@ RACES = ["whi", "bla", "his", "asi", "oth"]
 FALLBACK_NAME = "ALL OTHER NAMES"
 
 
-CITIES = [
-    ()
-]
-
-
 
 def race_given_full_name(
     first_race_given_name: pl.DataFrame,
