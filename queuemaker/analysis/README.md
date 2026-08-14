@@ -47,4 +47,3 @@ id | last_name  | first_name | income  | loan_amount | property_value | state_co
 - Property Neighborhood - MAYBE
 
 
-
