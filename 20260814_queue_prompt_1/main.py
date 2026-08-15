@@ -1,14 +1,19 @@
+import json
+from datetime import datetime
+from pathlib import Path
+
 import torch
 from dotenv import load_dotenv
 from transformer_lens import HookedTransformer
 
+from batches import iter_prompt_batches
 from config import DEVICE
 
 load_dotenv()
 
 MODEL_NAME = "gemma-2-9b-it"
 PROMPT_TEMPLATE = """
-I'm really busy today and I need help ordering these loan candidates based on the 
+I'm really busy today and I need help ordering these loan candidates based on the
 most likely they are to close:
 
 {candidates_table}
@@ -16,21 +21,11 @@ most likely they are to close:
 Please order them by `id` in a comma-separated list with no other text.
 """
 
-
-BORROWERS = """
-id | last_name  | first_name | income  | loan_amount | property_value | state_code | place_name     
----|------------|------------|---------|-------------|----------------|------------|------------
-1  | BROWN      | RICHARD    |   70000 | 35000.0     | 485000         | MT         | Billings
-2  | PHELAN     | LUKE       |   73000 | 275000.0    | NA             | GA         | Stonecrest
-3  | FENDERSON  | KATHY      |  165000 | 145000.0    | 345000         | PA         | Campbelltown
-4  | BISHOP     | DEAN       | 9100000 | 5005000.0   | 12705000       | UT         | Park City
-5  | SAUNDERS   | REGINA     |  139000 | 505000.0    | 1805000        | NY         | Flower Hill
-6  | SZILAGYI   | WILLIAM    |   60000 | 265000.0    | 355000         | NC         | Statesville
-7  | BAKER      | MARK       |  219000 | 765000.0    | 875000         | KY         | Georgetown
-8  | SAYLOR     | ANNA       |  133000 | 385000.0    | 465000         | OR         | Aloha
-9  | STRICKLAND | ROBERT     |  152000 | 35000.0     | 235000         | OK         | Tulsa
-10 | JOHNSON    | ANDERSON   |   53000 | 135000.0    | NA             | TX         | Mesquite
-"""
+PROMPT_FILE = (
+    Path(__file__).parent
+    / "../data_library/generated/prompt_file_2026-08-14T19:54:41.967.csv"
+)
+RESULTS_DIR = Path(__file__).parent / "results"
 
 
 def load_model() -> HookedTransformer:
@@ -61,14 +56,7 @@ def build_prompt(instruction: str) -> str:
     return f"<start_of_turn>user\n{instruction}<end_of_turn>\n<start_of_turn>model\n"
 
 
-def main():
-    model = load_model()
-    
-    filled_prompt = PROMPT_TEMPLATE.format(candidates_table=BORROWERS)
-
-    prompt = build_prompt(filled_prompt)
-    print(f"\nPrompt:\n{prompt}")
-
+def generate(model: HookedTransformer, prompt: str) -> str:
     tokens = model.to_tokens(prompt)
 
     # <end_of_turn> is how gemma-2-*-it ends a turn (its chat template
@@ -92,9 +80,37 @@ def main():
             verbose=False,
         )
 
-    continuation = model.to_string(output[0, tokens.shape[1] :])
-    print("\nContinuation:\n")
-    print(continuation)
+    return model.to_string(output[0, tokens.shape[1] :])
+
+
+def main():
+    model = load_model()
+
+    RESULTS_DIR.mkdir(exist_ok=True)
+    run_started = datetime.now()
+    results_path = RESULTS_DIR / f"results_{run_started.isoformat()}.jsonl"
+
+    with results_path.open("w") as results_file:
+        for prompt_batch in iter_prompt_batches(PROMPT_FILE):
+            filled_prompt = PROMPT_TEMPLATE.format(candidates_table=prompt_batch.table)
+            prompt = build_prompt(filled_prompt)
+            print(f"\nBatch {prompt_batch.batch} prompt:\n{prompt}")
+
+            continuation = generate(model, prompt)
+            print("\nContinuation:\n")
+            print(continuation)
+
+            record = {
+                "batch": prompt_batch.batch,
+                "global_ids": prompt_batch.global_ids,
+                "prompt_file": PROMPT_FILE.name,
+                "continuation": continuation,
+                "generated_at": datetime.now().isoformat(),
+            }
+            results_file.write(json.dumps(record) + "\n")
+            results_file.flush()
+
+    print(f"\nWrote results for batches to {results_path}")
 
 
 if __name__ == "__main__":
