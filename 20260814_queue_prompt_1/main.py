@@ -18,7 +18,7 @@ most likely they are to close:
 
 {candidates_table}
 
-Please order them by `id` in a comma-separated list with no other text.
+Please order by most likely to close by `id` in a comma-separated list with no other text.
 """
 
 PROMPT_FILE = (
