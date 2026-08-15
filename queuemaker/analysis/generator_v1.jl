@@ -2,9 +2,9 @@ using DataFrames
 using CSV
 using Dates
 
-include("queries.jl")
+include("../queuemaker/analysis/queries.jl")
 
-BATCHES = 10
+BATCHES = 100
 
 names = ohio_voter_names(BATCHES)
 loan_details = hmda_sample(BATCHES)
@@ -15,4 +15,4 @@ frame.batch = batch
 frame.id = id
 frame.global_id = 1:nrow(frame)
 
-CSV.write("../../data_library/generated/prompt_file_$(now()).csv", frame)
+CSV.write("../data_library/generated/prompt_file_$(now()).csv", frame)

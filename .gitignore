@@ -3,3 +3,7 @@
 data/
 data_library
 __pycache__
+
+*.csv
+*.json
+*.jsonl
