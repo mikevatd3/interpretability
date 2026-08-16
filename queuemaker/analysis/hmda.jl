@@ -8,7 +8,7 @@ using StatsBase
 include("/home/michael/3_labratory/makie_themes/hokusai_makie.jl")
 set_theme!(theme_hokusai())
 
-include("queries.jl")
+include(joinpath(@__DIR__, "queries.jl"))
 
 hmda = hmda_sample()
 log_incomes = log.(hmda.income)

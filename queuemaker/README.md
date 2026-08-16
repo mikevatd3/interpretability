@@ -54,4 +54,43 @@ discriminatory effects.
 
 ## 2026-08-13
 
+Hi Wonyoung,
 
+That sounds good. I've been working mainly on the dataset generation process I
+described last week.
+
+To answer the questions from your previous email:
+
+1. Yes, I've been building out the model so I can analyze model output to see if
+   / how discriminatory effects show up. I see this as an initial measurement
+   that can guide where to look. I think there are opportunities for looking at
+   SAEs and the activation of the attention blocks 'per row & per field' of the
+   synthetic input dataset. I like this because, if we can use a measurement
+   like this with SAEs / attention activations to show why a behavior happens
+   internally, nothing is stopping us from taking this 'outer measurement' on
+   closed-weight models.
+
+2. I've been working on the synthetic generation side and right now its a
+   little bit clumsy. I'm following papers on the BISG and BIFSG technique for
+   resolving race from name and place. (I also found a paper where they found
+   modern LLMs to be more effective than these statistical models at accurately
+   resolving race, so the idea that a model can do this task checks out). In my
+   current draft, I pull full names at random from voter files and attach them
+   to actual loan-level attributes from the Home Mortgage Disclosure act. I then
+   use BIFSG to estimate from name and location the probability that the
+   synthetic person is of a particular race. Unlike the analysts who are trying
+   to figure out race on voter files, for this work, ambiguous race
+   probabilities are useful because you can train the regression on the logit of
+   that probability.  
+
+I thought more about the causal part you mentioned more though. Originally I was
+vaguely thinking causal a-la Donald Rubin, but the strategy could be to use
+direct name-substituting identical pairs within otherwise the same candidate
+dataset. This would be much a much clearer demonstration of the effect.
+
+I also wanted to mention, I'm fully up and running on the GPU machine and
+running experiments there. Everything is working great.
+
+Talk soon,
+
+Mike

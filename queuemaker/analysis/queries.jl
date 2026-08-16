@@ -25,7 +25,8 @@ function hmda_sample(batches=100)
     rows = batches * 10
     conn = LibPQ.Connection("host=localhost dbname=hmda user=michael")
     result = execute(conn, """
-    SELECT hmda.income::FLOAT * 1000 AS borrower_income,
+    SELECT hmda.census_tract AS tract_geoid,
+           hmda.income::FLOAT * 1000 AS borrower_income,
            hmda.loan_amount::FLOAT,
            hmda.property_value::FLOAT,
            place.state_code AS property_state,
@@ -56,6 +57,33 @@ function ohio_voter_names(batches=1000)
     ORDER BY RANDOM()
     LIMIT \$1;
     """, [rows])
+    frame = DataFrame(result)
+    close(conn)
+    return frame
+end
+
+
+function rosenman_name_race(part::AbstractString)
+    part in ("first", "last") || error("part must be \"first\" or \"last\"")
+    conn = LibPQ.Connection("host=localhost dbname=hmda user=michael")
+    result = execute(conn, """
+    SELECT name, whi, bla, his, asi, oth
+    FROM rosenman_$(part)_name_race;
+    """)
+    frame = DataFrame(result)
+    close(conn)
+    return frame
+end
+
+
+function hmda_tract_race(acs_year=2024)
+    conn = LibPQ.Connection("host=localhost dbname=hmda user=michael")
+    result = execute(conn, """
+    SELECT tract_geoid, white, black, aian, asian, nhpi, other_race,
+           two_or_more, hispanic
+    FROM hmda_tract_race
+    WHERE acs_year = \$1;
+    """, [acs_year])
     frame = DataFrame(result)
     close(conn)
     return frame

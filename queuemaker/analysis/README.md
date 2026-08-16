@@ -1,5 +1,12 @@
 # What do we need to know to generate realistic real-estate data
 
+Generation itself lives in `../main.py` (Python) -- pulls real names from
+`oh_elections.voters`, real loan records from `hmda_lar`, and adds BIFSG race
+probabilities (`../bifsg.py`) using the Rosenman name-race tables and ACS
+tract-race data. This directory (Julia) is for ad-hoc analysis of the
+resulting distributions -- e.g. `plot_p_bla.jl`-style plots of a generated
+run -- not for generating the dataset.
+
 We want to generate loan candidates to order.
 
 We can also generate building candidates to order as well.

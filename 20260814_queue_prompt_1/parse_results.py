@@ -1,3 +1,4 @@
+import argparse
 import json
 import re
 from pathlib import Path
@@ -11,6 +12,13 @@ class BatchRanking(NamedTuple):
 
 def _parse_order(continuation: str, batch_size: int) -> list[int]:
     order = [int(match) for match in re.findall(r"\d+", continuation)]
+
+    out_of_range = sorted({i for i in order if i < 0 or i >= batch_size})
+    if out_of_range:
+        raise ValueError(
+            f"continuation contains id(s) out of range 0..{batch_size - 1}: "
+            f"{out_of_range} in {continuation!r} -> {order}"
+        )
 
     if sorted(order) != list(range(batch_size)):
         raise ValueError(
@@ -61,20 +69,43 @@ def write_rankings_json(
     if len(prompt_files) != 1:
         raise ValueError(f"expected a single prompt_file across all batches, got {prompt_files}")
 
+    batches = []
+    errors = []
+    for record in records:
+        try:
+            order = _parse_order(record["continuation"], len(record["global_ids"]))
+        except ValueError as exc:
+            errors.append(
+                {
+                    "batch": record["batch"],
+                    "continuation": record["continuation"],
+                    "error": str(exc),
+                }
+            )
+        else:
+            batches.append({"batch": record["batch"], "order": order})
+
     output = {
         "source": {
             "results_file": results_path.name,
             "prompt_file": prompt_files.pop(),
         },
-        "batches": [
-            {
-                "batch": record["batch"],
-                "order": _parse_order(record["continuation"], len(record["global_ids"])),
-            }
-            for record in records
-        ],
+        "batches": batches,
+        "errors": errors,
     }
 
     output_path = Path(output_path) if output_path else results_path.with_suffix(".json")
     output_path.write_text(json.dumps(output, indent=2))
     return output_path
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("results_path", type=Path, help="results/*.jsonl file to parse")
+    parser.add_argument(
+        "-o", "--output", type=Path, default=None, help="output path (default: alongside input, as .json)"
+    )
+    args = parser.parse_args()
+
+    output_path = write_rankings_json(args.results_path, args.output)
+    print(f"wrote {output_path}")

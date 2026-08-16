@@ -1,10 +1,11 @@
 [project]
 name = "queuemaker"
 version = "0.1.0"
-description = "Add your description here"
+description = "Generates synthetic loan-queue prompt datasets from real Ohio voter names and HMDA loan records, with BIFSG race probability estimates"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "numpy>=2.5.1",
     "polars>=1.43.2",
+    "psycopg[binary]>=3.3.4",
 ]

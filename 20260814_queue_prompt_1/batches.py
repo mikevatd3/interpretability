@@ -49,7 +49,7 @@ def _to_markdown_table(batch: pd.DataFrame) -> str:
 
 
 def iter_prompt_batches(csv_path: str | Path) -> Iterator[PromptBatch]:
-    """Read `csv_path` (as produced by queuemaker/analysis/generator_v1.jl)
+    """Read `csv_path` (as produced by queuemaker/main.py)
     and yield one PromptBatch per `batch`: the batch number, the
     `global_id`s of the rows in it (in the same order as the table's
     local `id`s, so a model's returned ordering can be mapped back to
