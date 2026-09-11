@@ -56,7 +56,7 @@ def main():
         csv = pd.read_csv(DATA_DIR / f"{expid}.csv")
         nrows = len(csv)
 
-        prompt = build_prompt(applications, nrows)
+        prompt, example = build_prompt(applications, nrows)
         tokens = model.to_tokens(prompt)
 
         stop_ids = {model.tokenizer.eos_token_id}
@@ -83,6 +83,7 @@ def main():
             "device": DEVICE,
             "experiment_id": expid,
             "continuation": continuation,
+            "example": example,
         }
 
         result.append(row)
