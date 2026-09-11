@@ -22,9 +22,12 @@ Please order by most likely to close by `id` in a comma-separated list with no o
 """
 
 PROMPT_FILE = (
-    Path(__file__).parent
-    / "../data_library/generated/prompt_file_2026-08-14T19:54:41.967.csv"
+    Path(__file__).parent.parent
+    / "data_library/generated/prompt_file_2026-08-15T20:54:10.219.csv"
 )
+
+assert PROMPT_FILE.exists()
+
 RESULTS_DIR = Path(__file__).parent / "results"
 
 
