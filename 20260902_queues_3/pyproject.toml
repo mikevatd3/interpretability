@@ -1,0 +1,14 @@
+[project]
+name = "20260818-queue-prompt-2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "pandas>=3.0.5",
+    "psycopg>=3.3.4",
+    "rich>=15.0.0",
+    "sae-lens>=6.49.1",
+    "sqlalchemy>=2.0.52",
+]

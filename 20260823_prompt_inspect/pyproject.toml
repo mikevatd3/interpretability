@@ -1,0 +1,14 @@
+[project]
+name = "20260823-prompt-inspect"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dotenv>=0.9.9",
+    "pandas>=3.0.5",
+    "pgvector>=0.5.0",
+    "plotly>=6.9.0",
+    "psycopg[binary]>=3.3.4",
+    "sae-lens>=6.49.1",
+]
