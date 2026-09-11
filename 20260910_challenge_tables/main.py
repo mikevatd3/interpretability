@@ -5,6 +5,7 @@ import pandas as pd
 import torch
 from dotenv import load_dotenv
 from transformer_lens import HookedTransformer
+from tqdm import tqdm
 
 from config import MODEL, DEVICE, DATA_DIR, RESULT_DIR
 
@@ -45,7 +46,7 @@ def main():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     
     result = []
-    for file in DATA_DIR.glob("*.md"):
+    for file in tqdm(DATA_DIR.glob("*.md")):
         applications = file.read_text()
 
         expid = file.stem

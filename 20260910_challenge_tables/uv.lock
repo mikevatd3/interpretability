@@ -17,6 +17,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "pandas" },
     { name = "storage" },
+    { name = "tqdm" },
     { name = "transformer-lens" },
 ]
 
@@ -24,6 +25,7 @@ dependencies = [
 requires-dist = [
     { name = "pandas", specifier = ">=3.0.5" },
     { name = "storage", editable = "../storage" },
+    { name = "tqdm", specifier = ">=4.70.0" },
     { name = "transformer-lens", specifier = ">=3.8.1" },
 ]
 
