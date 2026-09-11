@@ -6,5 +6,9 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "pandas>=3.0.5",
+    "storage",
     "transformer-lens>=3.8.1",
 ]
+
+[tool.uv.sources]
+storage = { path = "../storage", editable = true }
