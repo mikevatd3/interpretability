@@ -44,6 +44,8 @@ def main():
     model = load_model()
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+    print(f"loading from {DATA_DIR}")
     
     result = []
     for file in tqdm(DATA_DIR.glob("*.md")):
