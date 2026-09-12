@@ -4,7 +4,7 @@ from textwrap import dedent
 import pandas as pd
 import torch
 from dotenv import load_dotenv
-from transformer_lens import HookedTransformer
+from transformer_lens import HookedTransformer, TransformerLensKeyValueCache
 from tqdm import tqdm
 
 from config import MODEL, DEVICE, DATA_DIR, RESULT_DIR
@@ -65,15 +65,20 @@ def main():
         # TODO: maybe adjust this? Too many tokens?
         n_tokens = 4 * nrows + 10 
 
+        past_kv_cache = TransformerLensKeyValueCache.init_cache(
+            model.cfg, model.cfg.device, tokens.shape[0]
+        )
+
         new_ids = []
+        next_input = tokens
         with torch.no_grad():
             for _ in range(n_tokens):
-                logits = model(tokens)
+                logits = model(next_input, past_kv_cache=past_kv_cache)
                 next_id = logits[:, -1, :].argmax().item()
                 if next_id in stop_ids:
                     break
                 new_ids.append(next_id)
-                tokens = torch.cat([tokens, torch.tensor([[next_id]], device=tokens.device)], dim=1)
+                next_input = torch.tensor([[next_id]], device=tokens.device)
 
         continuation = model.to_string(new_ids) if new_ids else ""
         
