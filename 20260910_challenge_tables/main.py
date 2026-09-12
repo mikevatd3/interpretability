@@ -9,6 +9,8 @@ from tqdm import tqdm
 
 from config import MODEL, DEVICE, DATA_DIR, RESULT_DIR
 
+from storage import sync_up
+
 
 load_dotenv()
 
@@ -43,15 +45,13 @@ def build_prompt(applications: str, nrows: int) -> tuple[str, list[int]]:
 def main():
     model = load_model()
 
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-    print(f"loading from {DATA_DIR}")
+    manifest = pd.read_csv(DATA_DIR / "manifest.csv")
     
     result = []
-    for file in tqdm(DATA_DIR.glob("*.md")):
-        applications = file.read_text()
+    for _, row in tqdm(manifest.iterrows()):
+        expid = row["fileid"]
 
-        expid = file.stem
+        applications = (DATA_DIR / f"{expid}.csv").read_text()
 
         csv = pd.read_csv(DATA_DIR / f"{expid}.csv")
         nrows = len(csv)
@@ -87,10 +87,13 @@ def main():
         }
 
         result.append(row)
-
+    
+    out_path = RESULT_DIR / f"outcomes_{datetime.now().isoformat()}.csv"
     all_experiments = pd.DataFrame.from_records(result)
-    all_experiments.to_csv(RESULT_DIR / f"outcomes_{datetime.now().isoformat()}.csv")
+    all_experiments.to_csv(out_path)
 
+    sync_up(out_path)
+    
 
 if __name__ == "__main__":
     main()
