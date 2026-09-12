@@ -48,7 +48,7 @@ def main():
     manifest = pd.read_csv(DATA_DIR / "manifest.csv")
     
     result = []
-    for _, row in tqdm(manifest.iterrows()):
+    for _, row in tqdm(manifest.iterrows(), total=len(manifest)):
         expid = row["fileid"]
 
         applications = (DATA_DIR / f"{expid}.csv").read_text()
