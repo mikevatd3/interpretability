@@ -1,0 +1,15 @@
+[project]
+name = "20261004-with-cities"
+version = "0.1.0"
+description = "Rank challenge-table leads (now with city/state) using a local model"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas>=3.0.5",
+    "storage",
+    "tqdm>=4.70.0",
+    "transformer-lens>=3.8.1",
+]
+
+[tool.uv.sources]
+storage = { path = "../storage", editable = true }

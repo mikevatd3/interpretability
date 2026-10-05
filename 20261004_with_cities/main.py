@@ -79,10 +79,11 @@ def main():
         for i, (_, row) in enumerate(tqdm(manifest.iterrows(), total=len(manifest)), start=1):
             expid = row["fileid"]
 
-            applications = (DATA_DIR / f"{expid}.csv").read_text()
+            # The .md is the model-facing table. The .csv holds the ground
+            # truth (coefficients, percentiles, ...) and must not be prompted.
+            applications = (DATA_DIR / f"{expid}.md").read_text()
 
-            csv = pd.read_csv(DATA_DIR / f"{expid}.csv")
-            nrows = len(csv)
+            nrows = len(pd.read_csv(DATA_DIR / f"{expid}.csv"))
 
             prompt, example = build_prompt(applications, nrows)
             tokens = model.to_tokens(prompt)
