@@ -2,16 +2,18 @@ import sys
 
 import torch
 from sae_lens import SAE
-from transformer_lens import HookedTransformer
+from transformer_lens.model_bridge import TransformerBridge
 
 LAYER = 20
 WIDTH = "16k"
 RES_HOOK = f"blocks.{LAYER}.hook_resid_post"
+RES_HOOK_CANONICAL = f"blocks.{LAYER}.hook_out"
 Z_HOOK = f"blocks.{LAYER}.attn.hook_z"
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-model = HookedTransformer.from_pretrained("gemma-2-9b", device=device, dtype=torch.bfloat16)
+model = TransformerBridge.boot_transformers("google/gemma-2-9b", device=device, dtype=torch.bfloat16)
+model.enable_compatibility_mode()
 res_sae = SAE.from_pretrained("gemma-scope-9b-pt-res-canonical", f"layer_{LAYER}/width_{WIDTH}/canonical", device=device)
 att_sae = SAE.from_pretrained("gemma-scope-9b-pt-att-canonical", f"layer_{LAYER}/width_{WIDTH}/canonical", device=device)
 
@@ -26,9 +28,11 @@ def run(prompt: str) -> dict:
     """Capture everything for a prompt. All tensors are on CPU, shaped [n_tokens, ...]."""
     tokens = model.to_tokens(prompt)
     _, cache = model.run_with_cache(
-        tokens, names_filter=lambda n: n.endswith("attn.hook_attn_out") or n in (RES_HOOK, Z_HOOK)
+        tokens, names_filter=lambda n: n.endswith("attn.hook_attn_out") or n in (RES_HOOK, RES_HOOK_CANONICAL, Z_HOOK)
     )
-    z = cache[Z_HOOK].flatten(-2)  # [1, pos, n_heads * d_head]
+    z = cache[Z_HOOK]
+    if z.ndim == 4:  # HookedTransformer layout [1, pos, n_heads, d_head]; the bridge may already be flat
+        z = z.flatten(-2)  # [1, pos, n_heads * d_head]
     return {
         "prompt": prompt,
         "tokens": model.to_str_tokens(tokens),
